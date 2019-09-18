@@ -19,10 +19,13 @@ package com.theta360.pluginlibrary.activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+
 import com.theta360.pluginlibrary.UncaughtException;
 import com.theta360.pluginlibrary.UncaughtException.Callback;
 import com.theta360.pluginlibrary.callback.KeyCallback;
@@ -30,6 +33,7 @@ import com.theta360.pluginlibrary.receiver.KeyReceiver;
 import com.theta360.pluginlibrary.values.ExitStatus;
 import com.theta360.pluginlibrary.values.LedColor;
 import com.theta360.pluginlibrary.values.LedTarget;
+import com.theta360.pluginlibrary.values.OLEDMode;
 
 /**
  * PluginActivity
@@ -266,6 +270,77 @@ public abstract class PluginActivity extends AppCompatActivity {
     public void notificationLedHide(@NonNull LedTarget ledTarget) {
         Intent intent = new Intent(Constants.ACTION_LED_HIDE);
         intent.putExtra(Constants.TARGET, ledTarget.toString());
+        sendBroadcast(intent);
+    }
+
+    /**
+     * Show the bitmap image on the OLED display.
+     *
+     * @param bitmap The bitmap image to show.
+     */
+    public void notificationOLEDImageShow(@NonNull Bitmap bitmap) {
+        Intent intent = new Intent(Constants.ACTION_OLED_IMAGE_SHOW);
+        intent.putExtra(Constants.BITMAP, bitmap);
+        sendBroadcast(intent);
+    }
+
+    /**
+     * Show and blink the bitmap image on the OLED display with default period.
+     *
+     * @param bitmap The bitmap image to blink.
+     */
+    public void notificationOLEDImageBlink(@NonNull Bitmap bitmap) {
+        Intent intent = new Intent(Constants.ACTION_OLED_IMAGE_BLINK);
+        intent.putExtra(Constants.BITMAP, bitmap);
+        sendBroadcast(intent);
+    }
+
+    /**
+     * Show and blink the bitmap image on the OLED display.
+     *
+     * @param bitmap The bitmap image to blink.
+     * @param period The period of the blinking cycle.
+     */
+    public void notificationOLEDImageBlink(@NonNull Bitmap bitmap, int period) {
+        Intent intent = new Intent(Constants.ACTION_OLED_IMAGE_BLINK);
+        intent.putExtra(Constants.BITMAP, bitmap);
+        intent.putExtra(Constants.PERIOD, period);
+        sendBroadcast(intent);
+    }
+
+    /**
+     * Show the text on the OLED display.
+     *
+     * @param textMiddle The text to show on middle row of the OLED display.
+     * @param textBottom The text to show on bottom row of the OLED display.
+     */
+    public void notificationOLEDTextShow(@Nullable String textMiddle, @Nullable String textBottom) {
+        Intent intent = new Intent(Constants.ACTION_OLED_TEXT_SHOW);
+        if (textMiddle != null) {
+            intent.putExtra(Constants.TEXT_MIDDLE, textMiddle);
+        }
+        if (textBottom != null) {
+            intent.putExtra(Constants.TEXT_BOTTOM, textBottom);
+        }
+        sendBroadcast(intent);
+    }
+
+    /**
+     * Turn off the OLED display.
+     */
+    public void notificationOLEDHide() {
+        Intent intent = new Intent(Constants.ACTION_OLED_HIDE);
+        sendBroadcast(intent);
+    }
+
+    /**
+     * Switch the mode of the OLED display.
+     *
+     * @param oledMode The mode of the OLED display to set.
+     */
+    public void notificationOLEDDisplaySet(@NonNull OLEDMode oledMode) {
+        Intent intent = new Intent(Constants.ACTION_OLED_DISPLAY_SET);
+        intent.putExtra(Constants.DISPLAY, oledMode.toString());
         sendBroadcast(intent);
     }
 
